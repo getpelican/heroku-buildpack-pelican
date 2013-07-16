@@ -1,0 +1,5 @@
+#!/bin/bash
+
+erb /app/nginx.conf.erb > /app/nginx.conf
+exec /app/local/sbin/nginx -p /app/local -c /app/nginx.conf
+

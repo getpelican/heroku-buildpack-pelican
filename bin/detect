@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -f $1/pelicanconf.py ]; then
+  echo "Pelican"
+  exit 0
+else
+  echo "A pelicanconf.py file is required"
+  exit 1
+fi
+

@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+# Fail fast and fail hard.
+set -eo pipefail
+
+# Paths.
+BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+ROOT_DIR=$(dirname $BIN_DIR)
+BUILD_DIR=$1
+CACHE_DIR=$2
+CACHED_DIRS=".heroku"
+WORKING_DIR=$(pwd)
+
+rm -fr $CACHE_DIR
+
+mkdir -p $CACHE_DIR
+
+# Versions.
+PYTHON_VERSION="python-2.7.4"
+DISTRIBUTE_VERSION="distribute-0.6.49"
+PIP_VERSION="pip-1.3.1"
+NGINX_VERSION="nginx-1.5.2"
+
+<<PIP_REQUIREMENTS
+Jinja2==2.7
+Markdown==2.3.1
+MarkupSafe==0.18
+Pygments==1.6
+Unidecode==0.04.13
+blinker==1.2
+docutils==0.10
+feedgenerator==1.6
+pelican==3.2.2
+pytz==2013b
+six==1.3.0
+PIP_REQUIREMENTS
+
+source $BIN_DIR/utils
+
+if [[ ! -d "$CACHE_DIR/$PYTHON_VERSION" ]]; then
+  cd $CACHE_DIR
+  puts-step "Installing Python ($PYTHON_VERSION)"
+  curl http://envy-versions.s3.amazonaws.com/$PYTHON_VERSION.tar.bz2 -s | tar jx &> /dev/null
+  mv python $PYTHON_VERSION
+fi
+
+export PATH=$CACHE_DIR/$PYTHON_VERSION/bin:$PATH
+
+if [[ ! -d "$CACHE_DIR/$DISTRIBUTE_VERSION" ]]; then
+  cd $CACHE_DIR
+  puts-step "Installing Distribute ($DISTRIBUTE_VERSION)"
+  curl https://pypi.python.org/packages/source/d/distribute/$DISTRIBUTE_VERSION.tar.gz -s | tar xz &> /dev/null
+  cd $DISTRIBUTE_VERSION
+  python setup.py install &> /dev/null
+fi
+
+if [[ ! -d "$CACHE_DIR/$PIP_VERSION" ]]; then
+  cd $CACHE_DIR
+  puts-step "Install pip ($PIP_VERSION)"
+  curl https://pypi.python.org/packages/source/p/pip/$PIP_VERSION.tar.gz -s | tar xz &> /dev/null
+  cd $PIP_VERSION
+  python setup.py install &> /dev/null
+fi
+
+cd $BUILD_DIR
+
+if [[ ! -f requirements.txt ]]; then
+  echo $PIP_REQUIREMENTS > requirements.txt
+fi
+
+puts-step "Installing dependencies using pip ($PIP_VERSION)"
+pip install --use-mirrors -r requirements.txt | indent
+
+puts-step "Running pelican"
+pelican -d -o $BUILD_DIR/public -s "pelicanconf.py" $BUILD_DIR/content | indent
+
+puts-step "Installing nginx ($NGINX_VERSION)"
+if [[ ! -d "$CACHE_DIR/$NGINX_VERSION" ]]; then
+  cd $CACHE_DIR
+  curl http://nginx.org/download/$NGINX_VERSION.tar.gz -s | tar xz &> /dev/null
+  cd $NGINX_VERSION
+  ./configure --prefix=$BUILD_DIR/local \
+    --without-select_module \
+    --without-poll_module \
+    --without-http_rewrite_module \
+    --without-http_gzip_module \
+    --without-http_proxy_module \
+    --with-http_gzip_static_module &> /dev/null
+  make -j2 &> /dev/null
+fi
+
+cd $CACHE_DIR/$NGINX_VERSION
+make install &> /dev/null
+
+mkdir -p $BUILD_DIR/.profile.d
+cp $ROOT_DIR/conf/path.sh $BUILD_DIR/.profile.d/
+
+cp $ROOT_DIR/conf/nginx.conf.erb $BUILD_DIR/
+cp $ROOT_DIR/conf/mime.types $BUILD_DIR/
+cp $BIN_DIR/launch-nginx "$BUILD_DIR/local/sbin"
+
