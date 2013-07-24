@@ -15,12 +15,12 @@ http {
 
   include mime.types;
 
- <% if ENV["PELICAN_SITEURL"] %>
-  server {
-    listen <%= ENV["PORT"] %>;
-    rewrite ^(.*) <%= ENV["PELICAN_SITEURL"] %>$1 permanent;
-  }
- <% end %>
+# <% if ENV["PELICAN_SITEURL"] %>
+#  server {
+#    listen <%= ENV["PORT"] %>;
+#    rewrite ^(.*) <%= ENV["PELICAN_SITEURL"] %>$1 permanent;
+#  }
+# <% end %>
 
   server {
     listen <%= ENV["PORT"] %>;
