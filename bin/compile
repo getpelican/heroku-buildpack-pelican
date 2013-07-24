@@ -21,8 +21,7 @@ DISTRIBUTE_VERSION="distribute-0.6.49"
 PIP_VERSION="pip-1.3.1"
 NGINX_VERSION="nginx-1.5.2"
 
-PIP_REQUIREMENTS="
-Jinja2==2.7
+PIP_REQUIREMENTS="Jinja2==2.7
 Markdown==2.3.1
 MarkupSafe==0.18
 Pygments==1.6
@@ -32,8 +31,7 @@ docutils==0.10
 feedgenerator==1.6
 pelican==3.2.2
 pytz==2013b
-six==1.3.0
-"
+six==1.3.0"
 
 source $BIN_DIR/utils
 
@@ -82,7 +80,6 @@ if [[ ! -d "$CACHE_DIR/$NGINX_VERSION" ]]; then
   ./configure --prefix=$BUILD_DIR/local \
     --without-select_module \
     --without-poll_module \
-    --without-http_rewrite_module \
     --without-http_gzip_module \
     --without-http_proxy_module \
     --with-http_gzip_static_module &> /dev/null
