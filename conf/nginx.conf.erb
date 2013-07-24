@@ -27,7 +27,7 @@ http {
     port_in_redirect off;
     root /app/public;
   <% if ENV["PELICAN_SITEURL"] %>
-    server_name <%= require 'URI'; URI.parse(ENV["PELICAN_SITEURL"]).host %>;
+    server_name <%= require 'uri'; URI.parse(ENV["PELICAN_SITEURL"]).host %>;
   <% end %>
 
     location / {
