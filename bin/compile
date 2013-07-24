@@ -82,7 +82,6 @@ if [[ ! -d "$CACHE_DIR/$NGINX_VERSION" ]]; then
   ./configure --prefix=$BUILD_DIR/local \
     --without-select_module \
     --without-poll_module \
-    --without-http_rewrite_module \
     --without-http_gzip_module \
     --without-http_proxy_module \
     --with-http_gzip_static_module &> /dev/null
