@@ -1,10 +1,10 @@
 #!/bin/sh
 
-if [ -f $1/pelicanconf.py ]; then
+if [ -f $1/pelicanconf.py ] || [ -f $1/publishconf.py ] ; then
   echo "Pelican"
   exit 0
 else
-  echo "A pelicanconf.py file is required"
+  echo "A pelicanconf.py or publishconf.py file is required."
   exit 1
 fi
 
