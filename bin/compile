@@ -58,7 +58,14 @@ puts-step "Installing dependencies using pip ($PIP_VERSION)"
 pip install --use-mirrors -r requirements.txt | indent
 
 puts-step "Running pelican"
-pelican -d -o $BUILD_DIR/public -s "publishconf.py" $BUILD_DIR/content | indent
+
+if [[ -f publishconf.py ]]; then
+  CONFIG_FILE="publishconf.py"
+else
+  CONFIG_FILE="pelicanconf.py"
+fi
+
+pelican -d -o $BUILD_DIR/public -s $CONFIG_FILE $BUILD_DIR/content | indent
 
 puts-step "Installing nginx ($NGINX_VERSION)"
 if [[ ! -d "$CACHE_DIR/$NGINX_VERSION" ]]; then
