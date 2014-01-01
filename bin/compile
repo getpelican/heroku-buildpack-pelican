@@ -50,12 +50,16 @@ fi
 
 cd $BUILD_DIR
 
-if [[ ! -f requirements.txt ]]; then
-  cp $ROOT_DIR/conf/requirements.txt requirements.txt
-fi
+if [[ -f requirements.txt ]]; then
+  puts-step "Installing dependencies using pip ($PIP_VERSION)"
+  pip install --use-mirrors -r requirements.txt | indent
+else
+  puts-step "Installing Pelican"
+  pip install --use-mirrors pelican | indent
 
-puts-step "Installing dependencies using pip ($PIP_VERSION)"
-pip install --use-mirrors -r requirements.txt | indent
+  puts-step "Installing Markdown"
+  pip install --use-mirrors Markdown | indent
+fi
 
 puts-step "Running pelican"
 
