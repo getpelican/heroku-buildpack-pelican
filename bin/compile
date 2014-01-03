@@ -95,7 +95,10 @@ make install &> /dev/null
 mkdir -p $BUILD_DIR/.profile.d
 cp $ROOT_DIR/conf/path.sh $BUILD_DIR/.profile.d/
 
-cp $ROOT_DIR/conf/nginx.conf.erb $BUILD_DIR/
+if [[ ! -f $BUILD_DIR/nginx.conf.erb ]]; then
+  cp $ROOT_DIR/conf/nginx.conf.erb $BUILD_DIR/nginx.conf.erb
+fi
+
 cp $ROOT_DIR/conf/mime.types $BUILD_DIR/
 cp $BIN_DIR/launch-nginx "$BUILD_DIR/local/sbin"
 
