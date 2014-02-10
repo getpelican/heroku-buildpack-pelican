@@ -11,8 +11,6 @@ CACHE_DIR=$2
 CACHED_DIRS=".heroku"
 WORKING_DIR=$(pwd)
 
-rm -fr $CACHE_DIR
-
 mkdir -p $CACHE_DIR
 
 # Versions.
@@ -20,7 +18,7 @@ PYTHON_VERSION="python-2.7.4"
 DISTRIBUTE_VERSION="distribute-0.6.49"
 PIP_VERSION="pip-1.3.1"
 NGINX_VERSION="nginx-1.5.2"
-
+PCRE_VERSION='pcre-8.21'
 source $BIN_DIR/utils
 
 if [[ ! -d "$CACHE_DIR/$PYTHON_VERSION" ]]; then
@@ -75,14 +73,19 @@ fi
 pelican -d -o $BUILD_DIR/public -s $CONFIG_FILE $BUILD_DIR/content | indent
 
 puts-step "Installing nginx ($NGINX_VERSION)"
+if [[ ! -d "$CACHE_DIR/$PCRE_VERSION" ]]; then
+  cd $CACHE_DIR
+  curl -L http://downloads.sourceforge.net/pcre/$PCRE_VERSION.tar.bz2 -s | tar jx &> /dev/null
+fi
+
 if [[ ! -d "$CACHE_DIR/$NGINX_VERSION" ]]; then
   cd $CACHE_DIR
   curl http://nginx.org/download/$NGINX_VERSION.tar.gz -s | tar xz &> /dev/null
   cd $NGINX_VERSION
   ./configure --prefix=$BUILD_DIR/local \
+    --with-pcre=$CACHE_DIR/$PCRE_VERSION \
     --without-select_module \
     --without-poll_module \
-    --without-http_rewrite_module \
     --without-http_gzip_module \
     --without-http_proxy_module \
     --with-http_gzip_static_module &> /dev/null
