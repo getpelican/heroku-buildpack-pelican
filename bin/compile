@@ -103,5 +103,8 @@ if [[ ! -f $BUILD_DIR/nginx.conf.erb ]]; then
 fi
 
 cp $ROOT_DIR/conf/mime.types $BUILD_DIR/
-cp $BIN_DIR/launch-nginx "$BUILD_DIR/local/sbin"
 
+if [[ ! -d $BUILD_DIR/local/sbin ]]; then
+  mkdir -p $BUILD_DIR/local/sbin
+fi
+cp $BIN_DIR/launch-nginx "$BUILD_DIR/local/sbin"
