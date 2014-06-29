@@ -78,6 +78,7 @@ if [[ ! -d "$CACHE_DIR/$PCRE_VERSION" ]]; then
   curl -L http://downloads.sourceforge.net/pcre/$PCRE_VERSION.tar.bz2 -s | tar jx &> /dev/null
 fi
 
+puts-step "Installing nginx ($NGINX_VERSION)"
 if [[ ! -d "$CACHE_DIR/$NGINX_VERSION" ]]; then
   cd $CACHE_DIR
   curl http://nginx.org/download/$NGINX_VERSION.tar.gz -s | tar xz &> /dev/null
