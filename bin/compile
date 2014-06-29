@@ -21,6 +21,8 @@ NGINX_VERSION="nginx-1.5.2"
 PCRE_VERSION='pcre-8.21'
 source $BIN_DIR/utils
 
+mkdir -p $BUILD_DIR/local
+
 if [[ ! -d "$CACHE_DIR/$PYTHON_VERSION" ]]; then
   cd $CACHE_DIR
   puts-step "Installing Python ($PYTHON_VERSION)"
