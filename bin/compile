@@ -27,7 +27,7 @@ if [[ ! -d "$CACHE_DIR/$PYTHON_VERSION" ]]; then
   cd $CACHE_DIR
   puts-step "Installing Python ($PYTHON_VERSION)"
   mkdir $PYTHON_VERSION
-  curl https://lang-python.s3.amazonaws.com/$STACK/runtimes/$PYTHON_VERSION.tar.gz -s | tar zx -C $PYTHON_VERSION &> /dev/null
+  curl https://lang-python.s3.amazonaws.com/$PYTHON_STACK/runtimes/$PYTHON_VERSION.tar.gz -s | tar zx -C $PYTHON_VERSION &> /dev/null
 fi
 
 export PATH=$CACHE_DIR/$PYTHON_VERSION/bin:$PATH
@@ -37,7 +37,7 @@ export LIBRARY_PATH=$CACHE_DIR/$PYTHON_VERSION/lib
 export LD_LIBRARY_PATH=$CACHE_DIR/$PYTHON_VERSION/lib
 
 puts-step "Ensure pip"
-python -m ensurepip
+python -m ensurepip | indent
 
 cd $BUILD_DIR
 
