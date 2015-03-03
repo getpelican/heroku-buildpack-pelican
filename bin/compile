@@ -42,14 +42,14 @@ python -m ensurepip
 cd $BUILD_DIR
 
 if [[ -f requirements.txt ]]; then
-  puts-step "Installing dependencies using pip ($PIP_VERSION)"
-  python -m pip install --quiet --use-mirrors -r requirements.txt | indent
+  puts-step "Installing dependencies using pip"
+  python -m pip install --quiet -r requirements.txt | indent
 else
   puts-step "Installing Pelican"
-  python -m pip install --quiet --use-mirrors pelican | indent
+  python -m pip install --quiet pelican | indent
 
   puts-step "Installing Markdown"
-  python -m pip install --quiet --use-mirrors Markdown | indent
+  python -m pip install --quiet Markdown | indent
 fi
 
 puts-step "Running pelican"
