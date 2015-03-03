@@ -15,11 +15,10 @@ rm -fr $CACHE_DIR
 mkdir -p $CACHE_DIR
 
 # Versions.
-PYTHON_VERSION="python-2.7.4"
-DISTRIBUTE_VERSION="distribute-0.6.49"
-PIP_VERSION="pip-1.3.1"
-NGINX_VERSION="nginx-1.6.0"
-PCRE_VERSION='pcre-8.35'
+PYTHON_VERSION="python-3.4.2"
+PYTHON_STACK="cedar"
+NGINX_VERSION="nginx-1.7.2"
+PCRE_VERSION='pcre-8.36'
 source $BIN_DIR/utils
 
 mkdir -p $BUILD_DIR/local/sbin
@@ -27,39 +26,30 @@ mkdir -p $BUILD_DIR/local/sbin
 if [[ ! -d "$CACHE_DIR/$PYTHON_VERSION" ]]; then
   cd $CACHE_DIR
   puts-step "Installing Python ($PYTHON_VERSION)"
-  curl http://envy-versions.s3.amazonaws.com/$PYTHON_VERSION.tar.bz2 -s | tar jx &> /dev/null
-  mv python $PYTHON_VERSION
+  mkdir $PYTHON_VERSION
+  curl https://lang-python.s3.amazonaws.com/$STACK/runtimes/$PYTHON_VERSION.tar.gz -s | tar zx -C $PYTHON_VERSION &> /dev/null
 fi
 
 export PATH=$CACHE_DIR/$PYTHON_VERSION/bin:$PATH
+export C_INCLUDE_PATH=$CACHE_DIR/$PYTHON_VERSION/include
+export CPLUS_INCLUDE_PATH=$CACHE_DIR/$PYTHON_VERSION/include
+export LIBRARY_PATH=$CACHE_DIR/$PYTHON_VERSION/lib
+export LD_LIBRARY_PATH=$CACHE_DIR/$PYTHON_VERSION/lib
 
-if [[ ! -d "$CACHE_DIR/$DISTRIBUTE_VERSION" ]]; then
-  cd $CACHE_DIR
-  puts-step "Installing Distribute ($DISTRIBUTE_VERSION)"
-  curl https://pypi.python.org/packages/source/d/distribute/$DISTRIBUTE_VERSION.tar.gz -s | tar xz &> /dev/null
-  cd $DISTRIBUTE_VERSION
-  python setup.py install &> /dev/null
-fi
-
-if [[ ! -d "$CACHE_DIR/$PIP_VERSION" ]]; then
-  cd $CACHE_DIR
-  puts-step "Install pip ($PIP_VERSION)"
-  curl https://pypi.python.org/packages/source/p/pip/$PIP_VERSION.tar.gz -s | tar xz &> /dev/null
-  cd $PIP_VERSION
-  python setup.py install &> /dev/null
-fi
+puts-step "Ensure pip"
+python -m ensurepip
 
 cd $BUILD_DIR
 
 if [[ -f requirements.txt ]]; then
   puts-step "Installing dependencies using pip ($PIP_VERSION)"
-  pip install --use-mirrors -r requirements.txt | indent
+  python -m pip install --quiet --use-mirrors -r requirements.txt | indent
 else
   puts-step "Installing Pelican"
-  pip install --use-mirrors pelican | indent
+  python -m pip install --quiet --use-mirrors pelican | indent
 
   puts-step "Installing Markdown"
-  pip install --use-mirrors Markdown | indent
+  python -m pip install --quiet --use-mirrors Markdown | indent
 fi
 
 puts-step "Running pelican"
