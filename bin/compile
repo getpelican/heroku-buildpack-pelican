@@ -16,7 +16,7 @@ mkdir -p $CACHE_DIR
 
 # Versions.
 PYTHON_VERSION="python-3.4.2"
-PYTHON_STACK="cedar"
+PYTHON_STACK="cedar-14"
 NGINX_VERSION="nginx-1.7.2"
 PCRE_VERSION='pcre-8.36'
 source $BIN_DIR/utils
