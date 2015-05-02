@@ -15,7 +15,7 @@ rm -fr $CACHE_DIR
 mkdir -p $CACHE_DIR
 
 # Versions.
-PYTHON_VERSION="python-3.4.2"
+PYTHON_VERSION="python-3.4.3"
 PYTHON_STACK="cedar-14"
 NGINX_VERSION="nginx-1.7.2"
 PCRE_VERSION='pcre-8.36'
