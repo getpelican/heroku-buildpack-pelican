@@ -40,7 +40,7 @@ export LIBRARY_PATH=$CACHE_DIR/$PYTHON_VERSION/lib
 export LD_LIBRARY_PATH=$CACHE_DIR/$PYTHON_VERSION/lib
 
 puts-step "Ensure pip"
-python -m ensurepip | indent
+python -m ensurepip --upgrade | indent
 
 cd $BUILD_DIR
 
