@@ -11,7 +11,7 @@ CACHE_DIR=$2
 CACHED_DIRS=".heroku"
 WORKING_DIR=$(pwd)
 
-rm -fr $CACHE_DIR
+#rm -fr $CACHE_DIR
 mkdir -p $CACHE_DIR
 
 # Versions.
@@ -101,4 +101,3 @@ fi
 
 cp $ROOT_DIR/conf/mime.types $BUILD_DIR/
 cp $BIN_DIR/launch-nginx "$BUILD_DIR/local/sbin"
-
